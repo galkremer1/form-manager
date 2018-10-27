@@ -29,18 +29,15 @@ class FormContainer extends React.Component {
 
     submitForm = (e) => {
       e.preventDefault();
-      this.axios.post('https://api.sendgrid.com/v3/mail/send', {
+      // this.axios.post('https://api.sendgrid.com/v3/mail/send', {
+      this.axios.post('/sendEmail', {
         "personalizations":
-      [{"to": [{"email": "kremerlabs2@gmail.com"}]}],
+      [{"to": [{"email": "kremerlabs3@gmail.com"}]}],
         "from": {"email": "jones@form.com"},
         "subject": "This is a test",
         "content": [{"type": "text/plain", "value": "and easy to do anywhere, even with cURL"}]
             }, {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+        'Content-Type': 'application/json'
       })
       .then(function (response) {
         debugger
