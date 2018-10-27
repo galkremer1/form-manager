@@ -92,7 +92,7 @@ module.exports = function(proxy, allowedHost) {
           changeOrigin: true,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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'
           },
           pathRewrite: { '^/sendEmail': '' }, // remove leading /sendEmail to match real API urls
       }

@@ -1,3 +1,7 @@
 .has-feedback label~.form-control-feedback {
     top: 43px;
 }
+
+form.hide-form {
+    display: none;
+}
