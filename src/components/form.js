@@ -1,14 +1,17 @@
 
 import React from 'react';
 import {Button, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
-import './form.css';
 import validators from './validators';
+import './form.css';
+
+const axios = require('axios');
 
 class FormContainer extends React.Component {
     constructor(props, context) {
       super(props, context);
       this.handleChange = this.handleChange.bind(this);
       this.validators = validators;
+      this.axios = axios;
       this.state = {
         firstName: '',
         lastName: '',
@@ -23,6 +26,32 @@ class FormContainer extends React.Component {
         }
       };
     }
+
+    submitForm = (e) => {
+      e.preventDefault();
+      this.axios.post('https://api.sendgrid.com/v3/mail/send', {
+        "personalizations":
+      [{"to": [{"email": "kremerlabs2@gmail.com"}]}],
+        "from": {"email": "jones@form.com"},
+        "subject": "This is a test",
+        "content": [{"type": "text/plain", "value": "and easy to do anywhere, even with cURL"}]
+            }, {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+      })
+      .then(function (response) {
+        debugger
+        console.log(response);
+      })
+      .catch(function (error) {
+        debugger
+        console.log(error);
+      });
+    }
+
     checkFormValidation() {
       let isFormValid = true;
       const {validationState} = this.state;
@@ -53,12 +82,12 @@ class FormContainer extends React.Component {
     render() {
       const {inputList} = this.props;
       return (
-        <form>
+        <form onSubmit={this.submitForm.bind(this)}>
           <ControlLabel>Jones Form</ControlLabel>
           {
             inputList.map((input) => {
               return  <FormGroup
-                key = {input.value}s
+                key = {input.value}
                 controlId={input.value}
                 validationState={this.state.validationState[input.value]}>
                   <FormControl
