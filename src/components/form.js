@@ -1,51 +1,81 @@
 
 import React from 'react';
-import {FormGroup, FormControl, ControlLabel, HelpBlock} from 'react-bootstrap';
+import {Button, FormGroup, FormControl, ControlLabel} from 'react-bootstrap';
 import './form.css';
+import validators from './validators';
 
-class FormExample extends React.Component {
+class FormContainer extends React.Component {
     constructor(props, context) {
       super(props, context);
-  
       this.handleChange = this.handleChange.bind(this);
-  
+      this.validators = validators;
       this.state = {
-        value: ''
+        firstName: '',
+        lastName: '',
+        emailAddress: '',
+        phoneNumber: '',
+        isFormValid: false,
+        validationState: {
+          firstName: null,
+          lastName: null,
+          emailAddress: null,
+          phoneNumber: null,
+        }
       };
     }
-  
-    getValidationState() {
-      const length = this.state.value.length;
-      if (length > 10) return 'success';
-      else if (length > 5) return 'warning';
-      else if (length > 0) return 'error';
-      return null;
+    checkFormValidation() {
+      let isFormValid = true;
+      const {validationState} = this.state;
+      Object.keys(validationState).forEach((key) => {
+        if (isFormValid && validationState[key] !== 'success') {
+          isFormValid =  false;
+        }
+      })
+      return isFormValid;
     }
   
     handleChange(e) {
-      this.setState({ value: e.target.value });
+      const value = e.target.value;
+      const inputId = e.target.id;
+      const {validationState} = this.state;
+      const validator = e.target.getAttribute('validator');
+      const inputValidationState = this.validators[validator](value);
+      validationState[inputId] = inputValidationState;
+      const isFormValid = this.checkFormValidation();
+      this.setState({ 
+          [inputId]: value,
+          validationState,
+          isFormValid
+          }
+        );
     }
-  
+
     render() {
+      const {inputList} = this.props;
       return (
         <form>
-          <FormGroup
-            controlId="formBasicText"
-            validationState={this.getValidationState()}
-          >
-            <ControlLabel>Jones Form</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.value}
-              placeholder="Enter text"
-              onChange={this.handleChange}
-            />
-            <FormControl.Feedback />
-            <HelpBlock>Validation is based on string length.</HelpBlock>
-          </FormGroup>
+          <ControlLabel>Jones Form</ControlLabel>
+          {
+            inputList.map((input) => {
+              return  <FormGroup
+                key = {input.value}s
+                controlId={input.value}
+                validationState={this.state.validationState[input.value]}>
+                  <FormControl
+                    type="text"
+                    value={this.state[input.value]}
+                    placeholder={input.text}
+                    onChange={this.handleChange.bind(this)}
+                    validator={input.validator}
+                  />
+                  <FormControl.Feedback />
+                </FormGroup>
+            })
+          }
+          <Button type="submit" disabled={!this.state.isFormValid}>Submit</Button>
         </form>
       );
     }
   }
   
-export default FormExample;
+export default FormContainer;
